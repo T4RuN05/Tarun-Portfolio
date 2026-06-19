@@ -29,11 +29,20 @@ const playlist = [
   }
 ];
 
+const TOOLTIP_PHRASES = [
+  "one click won't hurt",
+  "press play, I dare you",
+  "chat, hear me out...",
+  "compiled with beats",
+  "npm install good-vibes"
+];
+
 export function MusicPlayer() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipText, setTooltipText] = useState(TOOLTIP_PHRASES[0]);
   
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -214,20 +223,16 @@ export function MusicPlayer() {
   }, [currentTrackIndex]);
 
   useEffect(() => {
-    // Show the tooltip after 2.5 seconds if they haven't seen it before
-    const hasSeen = localStorage.getItem("hasSeenMusicTooltip");
-    if (!hasSeen) {
-      const timer = setTimeout(() => setShowTooltip(true), 2500);
-      return () => clearTimeout(timer);
-    }
+    // Show the tooltip after 7 seconds on every refresh
+    setTooltipText(TOOLTIP_PHRASES[Math.floor(Math.random() * TOOLTIP_PHRASES.length)]);
+    const timer = setTimeout(() => setShowTooltip(true), 7000);
+    return () => clearTimeout(timer);
   }, []);
 
-  const handleExpand = () => {
+  const handleExpand = (e) => {
+    if (e) e.stopPropagation();
     setIsExpanded(true);
-    if (showTooltip) {
-      setShowTooltip(false);
-      localStorage.setItem("hasSeenMusicTooltip", "true");
-    }
+    if (showTooltip) setShowTooltip(false);
   };
 
   // === THE VISUALIZER ENGINE ===
@@ -395,12 +400,9 @@ export function MusicPlayer() {
               className="absolute bottom-full mb-4 left-4 pointer-events-auto origin-bottom-left"
             >
               <div className="relative bg-foreground text-background px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 w-max max-w-[75vw] sm:max-w-none">
-                <span className="text-sm font-medium whitespace-normal md:whitespace-nowrap">Curious what's playing in my headphones? 🎧</span>
+                <span className="text-sm font-medium whitespace-normal md:whitespace-nowrap">{tooltipText}</span>
                 <button 
-                  onClick={() => {
-                    setShowTooltip(false);
-                    localStorage.setItem("hasSeenMusicTooltip", "true");
-                  }}
+                  onClick={() => setShowTooltip(false)}
                   className="p-1 hover:bg-background/20 rounded-full transition-colors opacity-70 hover:opacity-100"
                 >
                   <X size={14} />

@@ -206,7 +206,7 @@ export function Achievements() {
             {/* Core Thick Body Without Glow */}
             <motion.path 
               d={pathString} 
-              stroke="#245fb8ff" 
+              stroke="#005de8ff" 
               strokeWidth="40" 
               strokeLinecap="round"
               fill="none" 
