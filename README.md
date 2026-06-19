@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cinematic 3D Developer Portfolio
 
-## Getting Started
+A high-performance, visually striking interactive portfolio built to showcase creative development, 3D web rendering, and modern UI/UX principles. This application is engineered with a heavy emphasis on dynamic motion, glassmorphism, and hardware-accelerated performance across all devices.
 
-First, run the development server:
+## ✨ Key Features
+
+- **Cinematic Aesthetic**: Dark, electric-blue theme with editorial-grade typography and immersive parallax scrolling.
+- **Hardware-Accelerated Motion**: Complex animations powered by Framer Motion, fully optimized with dedicated VRAM compositor layers (`translateZ(0)`) for buttery smooth 60fps rendering on mobile devices.
+- **Interactive 3D Engine**: Features an ASCII-rendered Black Hole canvas simulation (with optimized mobile fallbacks) and physics-based 3D tilting project cards.
+- **Custom Music Player**: A fully functional, hidden audio player with custom crossfading, play/pause logic, and dynamic audio-visualizer UI.
+- **Dynamic Island Navigation**: A floating, reactive navigation bar inspired by modern mobile OS paradigms.
+- **Smooth Scrolling**: Implements Lenis scroll on desktop for a fluid, continuous scrolling experience, seamlessly reverting to native momentum scrolling on touch devices.
+
+## 🛠 Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **UI Library**: [React](https://reactjs.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Animation**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/) & [React Icons](https://react-icons.github.io/react-icons/)
+- **Scroll Engine**: [Lenis](https://lenis.studiofreight.com/)
+
+## 🚀 Getting Started
+
+First, install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 📱 Mobile Performance Architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This portfolio utilizes an adaptive rendering engine to ensure optimal performance across devices:
+- **Responsive Blur Radiuses**: Dynamically scales down heavy `backdrop-filter` calculations on mobile screens to preserve battery and GPU limits.
+- **Physics Throttling**: Heavy `useSpring` and `useMotionValue` tracking are aggressively disabled on touch devices to prevent layout thrashing.
+- **Conditional Rendering**: Expensive Canvas/WebGL elements fall back to highly optimized CSS/Static equivalents on small viewports.
 
-## Learn More
+## 👨‍💻 Developer
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Tarun Asthana**
+- [GitHub](https://github.com/T4RuN05)
+- [LinkedIn](https://www.linkedin.com/in/tarun-asthana)
