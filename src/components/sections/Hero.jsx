@@ -136,6 +136,7 @@ export function Hero() {
             contactHref="#contact"
             viewWorkHref="#projects"
             enableMobileTilt={true}
+            mobileTiltSensitivity={30}
           />
         </motion.div>
       </div>

@@ -1,0 +1,61 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@900&amp;display=swap');
+      .logo-text {
+        font-family: 'Urbanist', sans-serif;
+        font-weight: 900;
+        font-size: 240px;
+        letter-spacing: -8px;
+        fill: #ffffff;
+        mix-blend-mode: difference;
+      }
+    </style>
+    
+    <!-- Background Noise Filter -->
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0, 1 0 0 0 0, 1 0 0 0 0, 0 0 0 0.15 0" />
+    </filter>
+    
+    <!-- Warp/Veil Filter -->
+    <filter id="warp">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" result="warpNoise"/>
+      <feDisplacementMap in="SourceGraphic" in2="warpNoise" scale="80" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="15" />
+    </filter>
+
+    <!-- Circular Clip Path -->
+    <clipPath id="circleClip">
+      <circle cx="256" cy="256" r="256" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#circleClip)">
+    <!-- Deep Dark Veil Background -->
+    <rect width="512" height="512" fill="#06030F" />
+    
+    <!-- Subtle Grain -->
+    <rect width="512" height="512" filter="url(#noise)" opacity="0.6" />
+    
+    <!-- Swirling Electric Veil Effect, shifted upwards and lower opacity -->
+    <g filter="url(#warp)" transform="translate(0, -180)">
+      <!-- Deep Indigo/Violet Blob -->
+      <circle cx="150" cy="150" r="220" fill="#2d057a" opacity="0.4" />
+      <!-- Electric Blue Blob -->
+      <circle cx="400" cy="400" r="180" fill="#0a59a8" opacity="0.4" />
+      <!-- Bright Violet Sweep -->
+      <path d="M-100,250 C150,100 350,400 600,250" stroke="#7928ca" stroke-width="120" fill="none" opacity="0.3"/>
+      <!-- Cyan/Blue Sweep -->
+      <path d="M0,500 C200,200 400,200 512,0" stroke="#0070f3" stroke-width="100" fill="none" opacity="0.2"/>
+    </g>
+
+    <!-- The "TA" Text with Urbanist Font -->
+    <text 
+      x="256" 
+      y="345" 
+      text-anchor="middle" 
+      class="logo-text"
+    >TA</text>
+  </g>
+</svg>
