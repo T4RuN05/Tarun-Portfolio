@@ -110,7 +110,7 @@ export function Hero() {
              <a 
                href="/Tarun_Asthana_Resume.pdf" 
                download="Tarun_Asthana_Resume.pdf" 
-               onClick={() => sendGAEvent({ event: 'Resume_Downloaded', value: 'hero_section' })}
+               onClick={() => sendGAEvent('event', 'Resume_Downloaded', { value: 'hero_section' })}
                className="glass backdrop-blur-lg px-8 py-3.5 rounded-full flex items-center gap-3 hover:bg-white/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all duration-300 border border-black/10 dark:border-white/10 shadow-xl group"
              >
                  <Download size={18} className="text-primary group-hover:-translate-y-0.5 transition-transform" />
@@ -150,7 +150,7 @@ export function Hero() {
         <span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-bold opacity-80">
           Scroll
         </span>
-        <div className="w-[1px] h-12 bg-white/10 relative flex justify-center">
+        <div className="w-[1px] h-12 bg-white/10 relative flex justify-center overflow-hidden rounded-full">
           <motion.div
             animate={{ 
               y: ["-100%", "200%", "200%"],
@@ -162,7 +162,7 @@ export function Hero() {
               times: [0, 0.3, 0.6, 1],
               ease: "easeInOut" 
             }}
-            className="absolute top-0 w-[2px] h-1/2 bg-white rounded-full shadow-[0_0_12px_2px_rgba(255,255,255,0.9)]"
+            className="absolute top-0 w-[2px] h-1/2 bg-white rounded-full shadow-[0_0_12px_0px_rgba(255,255,255,0.8)]"
           />
         </div>
       </motion.div>

@@ -102,7 +102,7 @@ export default function DarkVeil({
     const parent = canvas.parentElement;
 
     const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 2),
+      dpr: window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 2),
       canvas
     });
 
@@ -148,7 +148,19 @@ export default function DarkVeil({
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     const start = performance.now();
-    let frame = 0;
+    let frame = null;
+    let isVisible = true;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible && !frame) {
+        loop();
+      } else if (!isVisible && frame) {
+        cancelAnimationFrame(frame);
+        frame = null;
+      }
+    }, { threshold: 0.01 });
+    observer.observe(parent);
 
     const loop = () => {
       currentMouseX += (targetMouseX - currentMouseX) * 0.05;
@@ -162,13 +174,18 @@ export default function DarkVeil({
       program.uniforms.uScanFreq.value = scanlineFrequency;
       program.uniforms.uWarp.value = warpAmount;
       renderer.render({ scene: mesh });
-      frame = requestAnimationFrame(loop);
+      if (isVisible) {
+        frame = requestAnimationFrame(loop);
+      } else {
+        frame = null;
+      }
     };
 
-    loop();
+    if (isVisible) loop();
 
     return () => {
-      cancelAnimationFrame(frame);
+      observer.disconnect();
+      if (frame) cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMouseMove);
     };

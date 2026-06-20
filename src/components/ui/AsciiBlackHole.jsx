@@ -13,7 +13,8 @@ const AsciiBlackHole = ({ imageUrl }) => {
     // Alpha: false optimizes performance for solid backgrounds
     const ctx = canvas.getContext('2d', { alpha: false }); 
     
-    let animationFrameId;
+    let animationFrameId = null;
+    let isVisible = true;
     let imgData = null;
     let cols = 0;
     let rows = 0;
@@ -59,6 +60,10 @@ const AsciiBlackHole = ({ imageUrl }) => {
           }
         }
       }
+      
+      if (activeCells.size > 0 && isVisible && !animationFrameId) {
+        render(); // Wake up loop
+      }
     };
     
     const handleMouseLeave = () => {
@@ -68,6 +73,17 @@ const AsciiBlackHole = ({ imageUrl }) => {
 
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
+
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible && activeCells.size > 0 && !animationFrameId && baseCanvas) {
+        render();
+      } else if (!isVisible && animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    }, { threshold: 0.01 });
+    observer.observe(canvas.parentElement);
 
     const image = new Image();
     image.src = imageUrl;
@@ -270,7 +286,8 @@ const AsciiBlackHole = ({ imageUrl }) => {
 
     const render = () => {
       if (!baseCanvas) {
-         animationFrameId = requestAnimationFrame(render);
+         if (isVisible) animationFrameId = requestAnimationFrame(render);
+         else animationFrameId = null;
          return;
       }
 
@@ -345,16 +362,28 @@ const AsciiBlackHole = ({ imageUrl }) => {
         }
       }
 
-      animationFrameId = requestAnimationFrame(render);
+      if (activeCells.size > 0 || (activeCells.size === 0 && animationFrameId !== null)) {
+         // If size is 0, we do one last render to clear the final decayed cells, then sleep
+         const shouldSleepNext = activeCells.size === 0;
+         
+         if (isVisible && !shouldSleepNext) {
+            animationFrameId = requestAnimationFrame(render);
+         } else {
+            animationFrameId = null;
+         }
+      } else {
+         animationFrameId = null;
+      }
     };
 
     return () => {
       window.removeEventListener('resize', init);
+      observer.disconnect();
       if (canvas) {
           canvas.removeEventListener('mousemove', handleMouseMove);
           canvas.removeEventListener('mouseleave', handleMouseLeave);
       }
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
   }, [imageUrl, isLight]);
 

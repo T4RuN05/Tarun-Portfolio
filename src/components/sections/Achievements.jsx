@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useInView, AnimatePresence, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useInView, AnimatePresence, useTransform, useMotionValue, useSpring, useMotionValueEvent, animate } from "framer-motion";
 import { BlurText } from "@/components/ui/BlurText";
 import { Trophy, Award, Calendar } from "lucide-react";
 
@@ -174,6 +174,16 @@ export function Achievements() {
     offset: ["start 80%", "end end"]
   });
 
+  const pathProgress = useMotionValue(0);
+  const hasTriggeredRef = useRef(false);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest > 0.3 && !hasTriggeredRef.current) {
+      hasTriggeredRef.current = true;
+      animate(pathProgress, 1, { duration: 6, ease: "easeInOut" });
+    }
+  });
+
   const safeIndex = Math.min(activeIndex, achievementsData.length - 1);
   const activeItem = achievementsData[safeIndex] || achievementsData[0];
 
@@ -190,8 +200,8 @@ export function Achievements() {
     <section id="achievements" ref={containerRef} className="relative w-full bg-background text-foreground">
       
       {/* 1. Dynamic Blue Snake Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" className="w-full h-full opacity-80">
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden gpu-accelerate">
+        <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" className="w-full h-full opacity-80 gpu-accelerate">
 
             
             {/* Faint track */}
@@ -210,7 +220,7 @@ export function Achievements() {
               strokeWidth="40" 
               strokeLinecap="round"
               fill="none" 
-              style={{ pathLength: scrollYProgress }} 
+              style={{ pathLength: pathProgress }} 
               className="opacity-90"
             />
           </svg>

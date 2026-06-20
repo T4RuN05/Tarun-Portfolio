@@ -145,21 +145,30 @@ const TiltCard = ({ image }) => {
   );
 };
 
-const ScrollThumbnail = ({ img, activeImage, setActiveImage, distance }) => {
+const ScrollThumbnail = ({ img, activeImage, setActiveImage, distance, isMobile }) => {
   let scaleClass = "scale-100 opacity-100 z-10 shadow-[0_0_30px_rgba(255,255,255,0.15)]";
-  if (distance === 1) scaleClass = "scale-[0.85] opacity-60";
-  else if (distance === 2) scaleClass = "scale-[0.70] opacity-40";
-  else if (distance >= 3) scaleClass = "scale-[0.55] opacity-20";
+  
+  if (!isMobile) {
+    if (distance === 1) scaleClass = "scale-[0.85] opacity-60";
+    else if (distance === 2) scaleClass = "scale-[0.70] opacity-40";
+    else if (distance >= 3) scaleClass = "scale-[0.55] opacity-20";
+  } else {
+    // Mobile active state
+    scaleClass = activeImage === img 
+      ? "scale-100 opacity-100 border border-primary shadow-[0_0_15px_rgba(255,255,255,0.1)]" 
+      : "scale-95 opacity-40 border border-white/5";
+  }
 
   return (
     <div 
       onClick={() => setActiveImage(img)}
       className={cn(
-        "w-full h-[100px] rounded-lg overflow-hidden shrink-0 transition-all duration-500 origin-center flex items-center justify-center bg-secondary/10 cursor-pointer",
+        "rounded-lg overflow-hidden shrink-0 transition-all duration-500 origin-center flex items-center justify-center bg-secondary/10 cursor-pointer",
+        isMobile ? "w-[80px] h-[60px]" : "w-full h-[100px]",
         scaleClass
       )}
     >
-      <img src={img} className="w-full h-full object-contain transition-transform duration-700" />
+      <img src={img} className="w-full h-full object-cover transition-transform duration-700" />
     </div>
   );
 };
@@ -279,10 +288,42 @@ const ProjectCard = ({ project, index, onClick }) => {
 export function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeImage, setActiveImage] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   
   const overlayRef = useRef(null);
   const contentRef = useRef(null);
+  const thumbScrollRef = useRef(null);
   const globalLenis = useLenis(); // Captures the main site's physics engine
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Mobile Auto-Slideshow & Auto-Scroll
+  useEffect(() => {
+    if (isMobile && selectedProject && selectedProject.gallery) {
+      const interval = setInterval(() => {
+        setActiveImage((prev) => {
+          const currentIndex = selectedProject.gallery.indexOf(prev);
+          const nextIndex = (currentIndex + 1) % selectedProject.gallery.length;
+          
+          if (thumbScrollRef.current) {
+            const container = thumbScrollRef.current;
+            container.scrollTo({
+              left: nextIndex * 96, // 80px width + 16px gap
+              behavior: 'smooth'
+            });
+          }
+          
+          return selectedProject.gallery[nextIndex];
+        });
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [isMobile, selectedProject]);
 
   // 1:1 Mapped Scroll Physics (Bypassing useScroll hydration crash)
   const scrollY = useMotionValue(0);
@@ -314,6 +355,8 @@ export function Projects() {
 
           // Update framer-motion value and compute active image directly from Lenis tick
           lenis.on('scroll', (e) => {
+            if (window.innerWidth < 1024) return; // Disconnect scroll mapping on mobile
+            
             scrollY.set(e.scroll);
 
             if (!selectedProject.gallery) return;
@@ -378,7 +421,7 @@ export function Projects() {
               index={index} 
               onClick={(p) => {
                 setSelectedProject(p);
-                sendGAEvent({ event: 'Project_Opened', value: p.title });
+                sendGAEvent('event', 'Project_Opened', { value: p.title });
               }} 
             />
           ))}
@@ -416,11 +459,12 @@ export function Projects() {
                   animate={{ opacity: 1 }} 
                   exit={{ opacity: 0, transition: { duration: 0.2 } }} 
                   transition={{ duration: 0.3 }}
-                  className="fixed top-6 left-6 md:top-12 md:left-12 z-50 w-[fit-content] pointer-events-auto"
+                  className="fixed top-6 left-6 md:top-12 md:left-12 z-[100] pointer-events-auto bg-white/70 dark:bg-black/50 backdrop-blur-[24px] shadow-[0_4px_24px_rgba(0,0,0,0.5)] rounded-full border border-black/10 dark:border-white/20"
+                  style={{ WebkitBackdropFilter: "blur(24px)" }}
                 >
                   <button 
                     onClick={() => setSelectedProject(null)} 
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground uppercase tracking-widest text-xs md:text-sm font-bold transition-colors bg-background/50 backdrop-blur-md px-4 py-2 rounded-full border border-white/5"
+                    className="flex items-center gap-2 text-foreground uppercase tracking-widest text-xs md:text-sm font-bold transition-transform hover:scale-105 px-5 py-2.5 w-full h-full"
                   >
                     <ArrowLeft size={16} /> Back
                   </button>
@@ -511,21 +555,33 @@ export function Projects() {
                            const activeIdx = selectedProject.gallery.indexOf(activeImage);
                            const distance = activeIdx !== -1 ? Math.abs(activeIdx - idx) : 0;
                            return (
-                             <ScrollThumbnail key={idx} img={img} activeImage={activeImage} setActiveImage={setActiveImage} distance={distance} />
+                             <ScrollThumbnail key={idx} img={img} activeImage={activeImage} setActiveImage={setActiveImage} distance={distance} isMobile={false} />
                            );
                          })}
                        </motion.div>
                     </div>
                     
                     {/* Horizontal Thumbnails (Mobile Only) */}
-                    <div className="flex lg:hidden gap-4 overflow-x-auto pb-4 scrollbar-thin pointer-events-auto z-50">
-                      {selectedProject.gallery?.map((img, idx) => (
-                        <ScrollThumbnail key={idx} img={img} activeImage={activeImage} setActiveImage={setActiveImage} />
-                      ))}
+                    <div className="flex lg:hidden flex-col gap-2 pointer-events-auto z-50 order-2 lg:order-none w-full">
+                      <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground px-2">
+                        <span>Gallery</span>
+                        <span className="animate-pulse">Auto-scrolling</span>
+                      </div>
+                      <div className="relative w-full">
+                        <div ref={thumbScrollRef} className="flex gap-4 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory">
+                          {selectedProject.gallery?.map((img, idx) => (
+                            <div key={idx} className="snap-center shrink-0">
+                              <ScrollThumbnail img={img} activeImage={activeImage} setActiveImage={setActiveImage} isMobile={true} />
+                            </div>
+                          ))}
+                        </div>
+                        {/* Right Fade Indicator */}
+                        <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+                      </div>
                     </div>
 
                     {/* Far Right Column: 3D Tilt Card Main Stage */}
-                    <div className="flex-1 relative h-full flex items-center justify-center pointer-events-auto z-50">
+                    <div className="flex-1 relative h-full flex items-center justify-center pointer-events-auto z-50 order-1 lg:order-none">
                        <TiltCard image={activeImage} />
                     </div>
                   </motion.div>

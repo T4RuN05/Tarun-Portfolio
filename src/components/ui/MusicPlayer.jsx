@@ -212,7 +212,7 @@ export function MusicPlayer() {
       audioRef.current.play().then(() => {
         // Slow, luxurious 1.5s fade in
         fadeAudio(1, 1500);
-        sendGAEvent({ event: 'Song_Played', value: currentTrack.title });
+        sendGAEvent('event', 'Song_Played', { value: currentTrack.title });
       }).catch(e => {
         console.warn("Audio play failed:", e);
         setIsPlaying(false);
@@ -235,7 +235,7 @@ export function MusicPlayer() {
     if (e) e.stopPropagation();
     setIsExpanded(true);
     if (showTooltip) setShowTooltip(false);
-    sendGAEvent({ event: 'Music_Player_Opened', value: 'opened' });
+    sendGAEvent('event', 'Music_Player_Opened', { value: 'opened' });
   };
 
   // === THE VISUALIZER ENGINE ===

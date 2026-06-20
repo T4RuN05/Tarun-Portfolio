@@ -106,9 +106,13 @@ export function Skills() {
                   initial={{ opacity: 0, x: -30 }}
                   animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
                   transition={{ duration: 0.5, delay: idx * 0.1 }}
-                  onMouseEnter={() => setActiveDomain(domain)}
+                  onMouseEnter={(e) => {
+                    if (typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches) {
+                      setActiveDomain(domain);
+                    }
+                  }}
                   onClick={() => setActiveDomain(domain)}
-                  className={`gpu-accelerate group relative p-6 md:p-8 rounded-3xl cursor-pointer select-none touch-manipulation transition-all duration-500 overflow-hidden ${
+                  className={`gpu-accelerate group relative p-6 md:p-8 rounded-3xl cursor-pointer select-none touch-manipulation transition-[background-color,border-color,box-shadow,transform] duration-500 overflow-hidden ${
                     isActive 
                       ? "glass backdrop-blur-lg shadow-2xl scale-[1.02]" 
                       : "hover:bg-white/30 dark:hover:bg-white/5 border border-transparent hover:border-black/5 dark:hover:border-white/5"
@@ -138,39 +142,33 @@ export function Skills() {
                         }`}>
                           {domain.title}
                         </h3>
-                        <AnimatePresence>
-                          {isActive && (
-                            <motion.div 
-                              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                              animate={{ opacity: 1, height: "auto", marginTop: 8 }}
-                              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                              className="overflow-hidden"
-                            >
-                              <p className="text-sm text-muted-foreground max-w-sm mb-4 lg:mb-0">
-                                {domain.description}
-                              </p>
-                              
-                              {/* Mobile Only: Inline Skills Accordion */}
-                              <div className="lg:hidden flex flex-wrap gap-2 mt-4">
-                                {domain.skills.map((skill, idx) => {
-                                  const Icon = skill.icon;
-                                  return (
-                                    <motion.div
-                                      key={skill.name}
-                                      initial={{ opacity: 0, scale: 0.8 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      transition={{ delay: idx * 0.05 }}
-                                      className="flex items-center gap-2 p-2 px-3 rounded-xl bg-background/40 border border-white/5 shadow-sm backdrop-blur-md"
-                                    >
-                                      <Icon className="w-4 h-4 md:w-5 md:h-5" style={skill.color ? { color: skill.color } : undefined} />
-                                      <span className="text-xs font-semibold text-foreground whitespace-nowrap">{skill.name}</span>
-                                    </motion.div>
-                                  );
-                                })}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                        <div 
+                          className={`grid transition-[grid-template-rows,opacity,margin] duration-500 ease-in-out ${
+                            isActive ? "grid-rows-[1fr] opacity-100 mt-2" : "grid-rows-[0fr] opacity-0 mt-0"
+                          }`}
+                        >
+                          <div className="overflow-hidden">
+                            <p className="text-sm text-muted-foreground max-w-sm mb-4 lg:mb-0 pt-2">
+                              {domain.description}
+                            </p>
+                            
+                            {/* Mobile Only: Inline Skills Accordion */}
+                            <div className="lg:hidden flex flex-wrap gap-2 mt-4 pb-2">
+                              {domain.skills.map((skill, idx) => {
+                                const Icon = skill.icon;
+                                return (
+                                  <div
+                                    key={skill.name}
+                                    className="flex items-center gap-2 p-2 px-3 rounded-xl bg-background/40 border border-white/5 shadow-sm"
+                                  >
+                                    <Icon className="w-4 h-4 md:w-5 md:h-5" style={skill.color ? { color: skill.color } : undefined} />
+                                    <span className="text-xs font-semibold text-foreground whitespace-nowrap">{skill.name}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
