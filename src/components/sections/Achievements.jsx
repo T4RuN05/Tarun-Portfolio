@@ -168,17 +168,34 @@ const TiltAchievementCard = ({ activeItem }) => {
 export function Achievements() {
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 80%", "end end"]
   });
 
+  const mappedProgress = useTransform(scrollYProgress, [0.3, 0.9], [0, 1], { clamp: true });
+  
+  const smoothProgress = useSpring(mappedProgress, {
+    stiffness: 30,  // Ultra soft spring
+    damping: 20,    // Very slow catch-up
+    restDelta: 0.001
+  });
+
   const pathProgress = useMotionValue(0);
   const hasTriggeredRef = useRef(false);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.3 && !hasTriggeredRef.current) {
+    // Only trigger the auto-trace on mobile
+    if (isMobile && latest > 0.3 && !hasTriggeredRef.current) {
       hasTriggeredRef.current = true;
       animate(pathProgress, 1, { duration: 6, ease: "easeInOut" });
     }
@@ -220,7 +237,7 @@ export function Achievements() {
               strokeWidth="40" 
               strokeLinecap="round"
               fill="none" 
-              style={{ pathLength: pathProgress }} 
+              style={{ pathLength: isMobile ? pathProgress : smoothProgress }} 
               className="opacity-90"
             />
           </svg>

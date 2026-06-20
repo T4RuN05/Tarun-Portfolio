@@ -14,6 +14,18 @@ import { sendGAEvent } from '@next/third-parties/google';
 
 const SMOOTH_TRANSITION = { duration: 1.2, ease: [0.16, 1, 0.3, 1] };
 
+const TECH_URLS = {
+  "Node.js": "https://nodejs.org",
+  "MongoDB": "https://www.mongodb.com",
+  "React.js": "https://react.dev",
+  "React": "https://react.dev",
+  "Three.js": "https://threejs.org",
+  "Next.js": "https://nextjs.org",
+  "Tailwind CSS": "https://tailwindcss.com",
+  "Framer Motion": "https://www.framer.com/motion/",
+  "Figma": "https://www.figma.com"
+};
+
 const projects = [
   {
     id: 1,
@@ -175,11 +187,22 @@ const ScrollThumbnail = ({ img, activeImage, setActiveImage, distance, isMobile 
 
 const ProjectCard = ({ project, index, onClick }) => {
   const ref = useRef(null);
+  
+  // Normalized values for 3D tilt
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  
+  // Absolute values for local cursor
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  const [isHovered, setIsHovered] = useState(false);
 
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+  
+  const cursorXSpring = useSpring(mouseX, { stiffness: 400, damping: 28 });
+  const cursorYSpring = useSpring(mouseY, { stiffness: 400, damping: 28 });
 
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
@@ -189,10 +212,16 @@ const ProjectCard = ({ project, index, onClick }) => {
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
+    
+    // Local mouse coordinates relative to the card
+    const localX = e.clientX - rect.left;
+    const localY = e.clientY - rect.top;
+    
+    mouseX.set(localX);
+    mouseY.set(localY);
+
+    const xPct = localX / width - 0.5;
+    const yPct = localY / height - 0.5;
     x.set(xPct);
     y.set(yPct);
   };
@@ -200,6 +229,11 @@ const ProjectCard = ({ project, index, onClick }) => {
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
+    setIsHovered(false);
+  };
+
+  const handleMouseEnter = () => {
+    if (window.innerWidth >= 1024) setIsHovered(true);
   };
 
   return (
@@ -209,15 +243,33 @@ const ProjectCard = ({ project, index, onClick }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="h-full cursor-pointer perspective-[1500px]"
+      className="h-full cursor-none perspective-[1500px]"
       onClick={() => onClick(project)}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      data-hide-cursor="true"
     >
       <motion.div
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="h-full w-full"
+        className="h-full w-full relative"
       >
+        {/* 3D Local Cursor */}
+        <motion.div
+           className="absolute top-0 left-0 h-10 px-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold tracking-widest uppercase text-[11px] pointer-events-none z-[100] shadow-[0_0_20px_rgba(var(--primary),0.5)] whitespace-nowrap"
+           style={{
+             x: useTransform(cursorXSpring, (val) => val - 60),
+             y: useTransform(cursorYSpring, (val) => val - 20),
+             transform: "translateZ(80px)", // Float above the card in 3D space
+           }}
+           animate={{
+             scale: isHovered ? 1 : 0,
+             opacity: isHovered ? 1 : 0,
+           }}
+         >
+           See Project
+         </motion.div>
+
         <SpotlightCard className="group relative flex flex-col glass-card overflow-hidden hover:border-primary/40 transition-colors h-full">
         <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-6 bg-secondary/50">
         <motion.img
@@ -510,11 +562,27 @@ export function Projects() {
                   transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
                   className="flex flex-wrap gap-4 mt-8"
                 >
-                  {selectedProject.tags.map(tag => (
-                    <span key={tag} className="px-4 py-2 uppercase tracking-widest text-xs font-bold border border-foreground/10 rounded-full">
-                      {tag}
-                    </span>
-                  ))}
+                  {selectedProject.tags.map(tag => {
+                    const url = TECH_URLS[tag];
+                    const baseClass = "px-4 py-2 uppercase tracking-widest text-xs font-bold border border-foreground/10 rounded-full inline-block";
+                    
+                    if (url) {
+                      return (
+                        <LinkPreview 
+                          key={tag} 
+                          url={url} 
+                          className={cn(baseClass, "hover:bg-foreground/5 hover:border-foreground/20 transition-colors !text-foreground cursor-help")}
+                        >
+                          {tag}
+                        </LinkPreview>
+                      );
+                    }
+                    return (
+                      <span key={tag} className={baseClass}>
+                        {tag}
+                      </span>
+                    );
+                  })}
                 </motion.div>
                 
                 <motion.div

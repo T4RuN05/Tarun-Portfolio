@@ -184,3 +184,11 @@
 ::view-transition-new(root) {
   z-index: 2;
 }
+
+/* --- Hide Native Cursor on Desktop --- */
+@media (min-width: 1024px) {
+  * {
+    cursor: none !important;
+  }
+}
+

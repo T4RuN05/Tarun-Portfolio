@@ -244,13 +244,15 @@ const ProfileCardComponent = ({
     const pointerLeaveHandler = handlePointerLeave;
     const deviceOrientationHandler = handleDeviceOrientation;
 
+    let handleClick = null;
+
     shell.addEventListener('pointerenter', pointerEnterHandler);
     shell.addEventListener('pointermove', pointerMoveHandler);
     shell.addEventListener('pointerleave', pointerLeaveHandler);
 
     const anyOrientation = window.DeviceOrientationEvent;
     if (anyOrientation && typeof anyOrientation.requestPermission === 'function') {
-      const handleClick = () => {
+      handleClick = () => {
         if (!enableMobileTilt) return;
         anyOrientation
           .requestPermission()
@@ -278,7 +280,9 @@ const ProfileCardComponent = ({
       shell.removeEventListener('pointerenter', pointerEnterHandler);
       shell.removeEventListener('pointermove', pointerMoveHandler);
       shell.removeEventListener('pointerleave', pointerLeaveHandler);
-      shell.removeEventListener('click', handleClick);
+      if (handleClick) {
+        shell.removeEventListener('click', handleClick);
+      }
       window.removeEventListener('deviceorientation', deviceOrientationHandler);
       if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
       if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);

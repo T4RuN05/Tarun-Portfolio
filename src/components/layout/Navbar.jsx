@@ -83,6 +83,7 @@ export function Navbar() {
         "fixed left-1/2 -translate-x-1/2 z-50 flex items-center justify-between px-6 transition-colors duration-300",
         scrolled ? "py-3 bg-white/10 dark:bg-black/40 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)]" : "py-6 bg-transparent"
       )}
+      data-elevate-cursor="true"
     >
       <motion.div 
         initial={{ opacity: 0, y: -20 }}

@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import { MusicPlayer } from "@/components/ui/MusicPlayer";
 import { CustomScrollbar } from "@/components/ui/CustomScrollbar";
+import { GlobalCursor } from "@/components/ui/GlobalCursor";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <SmoothScroll>
+            <GlobalCursor />
             {children}
             <CustomScrollbar />
             <MusicPlayer />

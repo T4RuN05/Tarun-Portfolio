@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Briefcase, Users, Calendar } from "lucide-react";
 import { BlurText } from "@/components/ui/BlurText";
@@ -137,10 +137,38 @@ const TimelineItem = ({ item, index, scrollYProgress, totalItems, pauseRange }) 
 
 export function Timeline() {
   const containerRef = useRef(null);
+  const scrollDataRef = useRef({ startTime: null, startProgress: null });
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
+
+  // Performance-safe speedrun detection for the Timeline specifically
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      const data = scrollDataRef.current;
+
+      if (latest > 0.05 && latest < 0.95) {
+        if (!data.startTime) {
+          data.startTime = Date.now();
+          data.startProgress = latest;
+        }
+      } else {
+        if (data.startTime) {
+          const duration = Date.now() - data.startTime;
+          const distance = Math.abs(latest - data.startProgress);
+          
+          if (duration < 4000 && distance > 0.8) {
+            window.dispatchEvent(new CustomEvent('speedrun-detected'));
+          }
+          
+          data.startTime = null;
+          data.startProgress = null;
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
 
   const totalItems = timelineData.length;
   const scrollDistance = (totalItems - 1) * 100;

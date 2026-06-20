@@ -207,7 +207,7 @@ const AsciiBlackHole = ({ imageUrl }) => {
           }
 
           // Hard kill for true void (to prevent pure 0,0,0 from blowing up)
-          if (brightness < 0.002) {
+          if (brightness < 0.025) {
              cellData[idx] = { r: 0, g: 0, b: 0, brightness: 0, char: ' ', posX, posY };
              continue;
           }
@@ -236,10 +236,18 @@ const AsciiBlackHole = ({ imageUrl }) => {
              }
           }
 
+          // Deep Void Cleaner
+          // If a pixel is completely outside the accretion disk mask, aggressively kill it
+          // unless it is a genuinely bright star (> 15% brightness). This removes stray dust.
+          if (diskWeight === 0 && activeBrightness < 0.15) {
+             cellData[idx] = { r: 0, g: 0, b: 0, brightness: 0, char: ' ', posX, posY };
+             continue;
+          }
+
           // Organic Void Killer
           // Because 'appliedBoost' fades smoothly to 0 at the edges of the shape, 
-          // 'activeBrightness' organically dips below 0.015, creating a beautiful dithered fade out!
-          if (activeBrightness < 0.015) {
+          // 'activeBrightness' organically dips below 0.025, creating a beautiful dithered fade out!
+          if (activeBrightness < 0.025) {
              cellData[idx] = { r: 0, g: 0, b: 0, brightness: 0, char: ' ', posX, posY };
              continue;
           }

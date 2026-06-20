@@ -84,6 +84,8 @@ export function Contact() {
             <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 md:pr-4">
               <LinkPreview
                 url="https://www.linkedin.com/in/tarun-asthana"
+                isStatic={true}
+                imageSrc="/linkedin-preview.png"
                 className="group flex items-center gap-1.5 text-xs md:text-sm text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white uppercase tracking-widest transition-colors font-medium"
               >
                 LinkedIn

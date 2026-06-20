@@ -225,11 +225,27 @@ export function MusicPlayer() {
   }, [currentTrackIndex]);
 
   useEffect(() => {
-    // Show the tooltip after 15 seconds on every refresh
-    setTooltipText(TOOLTIP_PHRASES[Math.floor(Math.random() * TOOLTIP_PHRASES.length)]);
-    const timer = setTimeout(() => setShowTooltip(true), 15000);
-    return () => clearTimeout(timer);
-  }, []);
+    // Show the tooltip after 15 seconds of inactivity
+    const initialTimer = setTimeout(() => {
+      if (isPlaying || isExpanded) return; // Don't show if they are already interacting
+      
+      setShowTooltip(true);
+      let index = 0;
+      setTooltipText(TOOLTIP_PHRASES[index]);
+
+      // Rotate text every 6 seconds
+      const cycleInterval = setInterval(() => {
+        index = (index + 1) % TOOLTIP_PHRASES.length;
+        setTooltipText(TOOLTIP_PHRASES[index]);
+      }, 6000);
+      
+      return () => {
+        clearInterval(cycleInterval);
+      };
+    }, 15000);
+
+    return () => clearTimeout(initialTimer);
+  }, [isPlaying, isExpanded]);
 
   const handleExpand = (e) => {
     if (e) e.stopPropagation();
@@ -396,23 +412,36 @@ export function MusicPlayer() {
         <AnimatePresence>
           {showTooltip && !isExpanded && (
             <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              layout
+              initial={{ opacity: 0, y: 20, scale: 0.5 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              exit={{ opacity: 0, y: 20, scale: 0.5, transition: { duration: 0.3 } }}
               transition={{ type: "spring", damping: 15, stiffness: 200 }}
               className="absolute bottom-full mb-4 left-4 pointer-events-auto origin-bottom-left"
             >
-              <div className="relative bg-foreground text-background px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 w-max max-w-[75vw] sm:max-w-none">
-                <span className="text-sm font-medium whitespace-normal md:whitespace-nowrap">{tooltipText}</span>
+              <motion.div layout className="relative bg-foreground text-background px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 w-max max-w-[75vw] sm:max-w-none overflow-hidden z-10">
+                <AnimatePresence mode="wait">
+                  <motion.span 
+                    key={tooltipText}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-sm font-medium whitespace-normal md:whitespace-nowrap block"
+                  >
+                    {tooltipText}
+                  </motion.span>
+                </AnimatePresence>
+                
                 <button 
                   onClick={() => setShowTooltip(false)}
-                  className="p-1 hover:bg-background/20 rounded-full transition-colors opacity-70 hover:opacity-100"
+                  className="p-1 hover:bg-background/20 rounded-full transition-colors opacity-70 hover:opacity-100 shrink-0"
                 >
                   <X size={14} />
                 </button>
-                {/* Speech Tail */}
-                <div className="absolute -bottom-1.5 left-6 w-4 h-4 bg-foreground rotate-45 rounded-sm" />
-              </div>
+              </motion.div>
+              {/* Speech Tail */}
+              <div className="absolute -bottom-1.5 left-6 w-4 h-4 bg-foreground rotate-45 rounded-sm z-0" />
             </motion.div>
           )}
         </AnimatePresence>
