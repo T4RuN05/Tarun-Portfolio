@@ -3,7 +3,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import { MusicPlayer } from "@/components/ui/MusicPlayer";
 import { CustomScrollbar } from "@/components/ui/CustomScrollbar";
-import { Analytics } from "@vercel/analytics/react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const urbanist = Urbanist({
@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
             <CustomScrollbar />
             <MusicPlayer />
           </SmoothScroll>
-          <Analytics />
+          <GoogleAnalytics gaId="G-6SXCF14KQM" />
         </ThemeProvider>
       </body>
     </html>

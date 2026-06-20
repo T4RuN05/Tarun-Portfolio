@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Play, Pause, SkipForward, SkipBack, Music, X, Disc3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { sendGAEvent } from '@next/third-parties/google';
 
 const playlist = [
   {
@@ -211,6 +212,7 @@ export function MusicPlayer() {
       audioRef.current.play().then(() => {
         // Slow, luxurious 1.5s fade in
         fadeAudio(1, 1500);
+        sendGAEvent({ event: 'Song_Played', value: currentTrack.title });
       }).catch(e => {
         console.warn("Audio play failed:", e);
         setIsPlaying(false);
@@ -223,9 +225,9 @@ export function MusicPlayer() {
   }, [currentTrackIndex]);
 
   useEffect(() => {
-    // Show the tooltip after 7 seconds on every refresh
+    // Show the tooltip after 15 seconds on every refresh
     setTooltipText(TOOLTIP_PHRASES[Math.floor(Math.random() * TOOLTIP_PHRASES.length)]);
-    const timer = setTimeout(() => setShowTooltip(true), 7000);
+    const timer = setTimeout(() => setShowTooltip(true), 15000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -233,6 +235,7 @@ export function MusicPlayer() {
     if (e) e.stopPropagation();
     setIsExpanded(true);
     if (showTooltip) setShowTooltip(false);
+    sendGAEvent({ event: 'Music_Player_Opened', value: 'opened' });
   };
 
   // === THE VISUALIZER ENGINE ===

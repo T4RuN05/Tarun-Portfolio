@@ -10,6 +10,7 @@ import SpotlightCard from "@/components/ui/SpotlightCard";
 import { BlurText } from "@/components/ui/BlurText";
 import { LinkPreview } from "@/components/ui/link-preview";
 import { cn } from "@/lib/utils";
+import { sendGAEvent } from '@next/third-parties/google';
 
 const SMOOTH_TRANSITION = { duration: 1.2, ease: [0.16, 1, 0.3, 1] };
 
@@ -371,7 +372,15 @@ export function Projects() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} onClick={setSelectedProject} />
+            <ProjectCard 
+              key={project.id} 
+              project={project} 
+              index={index} 
+              onClick={(p) => {
+                setSelectedProject(p);
+                sendGAEvent({ event: 'Project_Opened', value: p.title });
+              }} 
+            />
           ))}
         </div>
       </section>

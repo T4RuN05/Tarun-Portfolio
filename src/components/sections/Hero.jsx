@@ -7,6 +7,7 @@ import { BlurText } from "@/components/ui/BlurText";
 import DarkVeil from "@/components/ui/DarkVeil";
 import ProfileCard from "@/components/ui/ProfileCard";
 import { cn } from "@/lib/utils";
+import { sendGAEvent } from '@next/third-parties/google';
 
 export function Hero() {
   const [isPreloading, setIsPreloading] = useState(true);
@@ -109,6 +110,7 @@ export function Hero() {
              <a 
                href="/Tarun_Asthana_Resume.pdf" 
                download="Tarun_Asthana_Resume.pdf" 
+               onClick={() => sendGAEvent({ event: 'Resume_Downloaded', value: 'hero_section' })}
                className="glass backdrop-blur-lg px-8 py-3.5 rounded-full flex items-center gap-3 hover:bg-white/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all duration-300 border border-black/10 dark:border-white/10 shadow-xl group"
              >
                  <Download size={18} className="text-primary group-hover:-translate-y-0.5 transition-transform" />

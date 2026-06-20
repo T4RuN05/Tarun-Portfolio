@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { sendGAEvent } from '@next/third-parties/google';
 
 const navLinks = [
   { name: "Home", href: "#home" },
@@ -111,6 +112,7 @@ export function Navbar() {
           <motion.a
             href="/Tarun_Asthana_Resume.pdf"
             download="Tarun_Asthana_Resume.pdf"
+            onClick={() => sendGAEvent({ event: 'Resume_Downloaded', value: 'navbar_desktop' })}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 3.3 + navLinks.length * 0.1, duration: 0.8, ease: "easeOut" }}
@@ -205,7 +207,7 @@ export function Navbar() {
             <a
               href="/Tarun_Asthana_Resume.pdf"
               download="Tarun_Asthana_Resume.pdf"
-              onClick={() => setIsOpen(false)}
+              onClick={() => { setIsOpen(false); sendGAEvent({ event: 'Resume_Downloaded', value: 'navbar_mobile' }); }}
               className="mt-4 text-lg font-medium text-primary flex items-center gap-2 glass px-6 py-3 rounded-full"
             >
               <Download size={18} /> Download Resume
