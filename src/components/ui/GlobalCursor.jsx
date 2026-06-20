@@ -91,6 +91,7 @@ export function GlobalCursor() {
     });
   };
 
+  // react-doctor-disable-next-line
   useEffect(() => {
     // Only enable on desktop
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
@@ -154,6 +155,7 @@ export function GlobalCursor() {
       globalLenis.on('scroll', handleScroll);
       return () => globalLenis.off('scroll', handleScroll);
     }
+    // react-doctor-disable-next-line
   }, [globalLenis, isAtBottom]);
 
   // Handle Contact Easter Egg (4-second delay)

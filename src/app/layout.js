@@ -5,6 +5,7 @@ import { MusicPlayer } from "@/components/ui/MusicPlayer";
 import { CustomScrollbar } from "@/components/ui/CustomScrollbar";
 import { GlobalCursor } from "@/components/ui/GlobalCursor";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { MotionConfig } from "framer-motion";
 import "./globals.css";
 
 const urbanist = Urbanist({
@@ -40,13 +41,15 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          <SmoothScroll>
-            <GlobalCursor />
-            {children}
-            <CustomScrollbar />
-            <MusicPlayer />
-          </SmoothScroll>
-          <GoogleAnalytics gaId="G-6SXCF14KQM" />
+          <MotionConfig reducedMotion="user">
+            <SmoothScroll>
+              <GlobalCursor />
+              {children}
+              <CustomScrollbar />
+              <MusicPlayer />
+            </SmoothScroll>
+            <GoogleAnalytics gaId="G-6SXCF14KQM" />
+          </MotionConfig>
         </ThemeProvider>
       </body>
     </html>

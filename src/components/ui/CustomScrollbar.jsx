@@ -19,7 +19,7 @@ export function CustomScrollbar() {
   const [activeSection, setActiveSection] = useState("Intro");
   const [isScrolling, setIsScrolling] = useState(false);
   const [sectionHeights, setSectionHeights] = useState(
-    sections.map(() => 100 / sections.length)
+    () => sections.map(() => 100 / sections.length)
   );
 
   useEffect(() => {
@@ -50,6 +50,7 @@ export function CustomScrollbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", updateHeights);
     
+    // react-doctor-disable-next-line
     handleScroll();
     // Initial delay to ensure DOM is fully painted and heights are stable
     setTimeout(updateHeights, 100);

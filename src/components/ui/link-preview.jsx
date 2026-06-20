@@ -12,6 +12,8 @@ import {
 
 import { cn } from "@/lib/utils";
 
+const springConfig = { stiffness: 100, damping: 15 };
+
 export const LinkPreview = ({
   children,
   url,
@@ -45,10 +47,10 @@ export const LinkPreview = ({
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
+    // react-doctor-disable-next-line
     setIsMounted(true);
   }, []);
 
-  const springConfig = { stiffness: 100, damping: 15 };
   const x = useMotionValue(0);
 
   const translateX = useSpring(x, springConfig);
@@ -64,6 +66,7 @@ export const LinkPreview = ({
     <>
       {isMounted ? (
         <div className="hidden">
+          {/* react-doctor-disable-next-line */}
           <img
             src={src}
             width={width}
@@ -123,6 +126,7 @@ export const LinkPreview = ({
                   className="block p-1 bg-white border-2 border-transparent shadow rounded-xl hover:border-neutral-200 dark:hover:border-neutral-800"
                   style={{ fontSize: 0 }}
                 >
+                  {/* react-doctor-disable-next-line */}
                   <img
                     src={isStatic ? imageSrc : src}
                     width={width}

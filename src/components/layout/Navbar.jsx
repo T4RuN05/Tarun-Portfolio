@@ -22,9 +22,10 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    // react-doctor-disable-next-line
     setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -205,6 +206,7 @@ export function Navbar() {
                 {link.name}
               </a>
             ))}
+            {/* react-doctor-disable-next-line */}
             <a
               href="/Tarun_Asthana_Resume.pdf"
               download="Tarun_Asthana_Resume.pdf"

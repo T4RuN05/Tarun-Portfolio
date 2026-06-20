@@ -59,7 +59,7 @@ export function BlurText({
       {elements.map((element, index) => (
         <motion.span 
           variants={disableAnimation ? undefined : child} 
-          key={index} 
+          key={`${element}-${index}`} 
           className={splitBy === "word" ? "mr-[0.25em]" : ""}
         >
           {element === " " ? "\u00A0" : element}

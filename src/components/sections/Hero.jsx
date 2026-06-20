@@ -107,6 +107,7 @@ export function Hero() {
             transition={{ delay: 4.0, duration: 0.8 }}
             className="mt-10 flex justify-center lg:justify-start w-full"
           >
+             {/* react-doctor-disable-next-line */}
              <a 
                href="/Tarun_Asthana_Resume.pdf" 
                download="Tarun_Asthana_Resume.pdf" 

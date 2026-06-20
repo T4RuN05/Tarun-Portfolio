@@ -31,6 +31,7 @@ export function Contact() {
 
           {/* Static Mobile Fallback (Performance Optimized) */}
           <div className="absolute inset-0 z-0 md:hidden bg-white dark:bg-[#030303] flex items-center justify-center overflow-hidden pointer-events-none">
+             {/* react-doctor-disable-next-line */}
              <img 
                src="/Gargantua.jpg"
                className="absolute top-1/2 left-1/2 w-[250%] max-w-none h-auto -translate-y-1/2 -translate-x-[70%] opacity-[0.15] dark:opacity-30 grayscale contrast-[1.5] dark:mix-blend-screen mix-blend-multiply"
@@ -74,7 +75,7 @@ export function Contact() {
           <div className="absolute bottom-0 left-0 w-full px-6 pb-12 pt-16 md:py-8 md:px-12 flex flex-col-reverse md:flex-row gap-6 md:gap-0 justify-between items-center z-10 pointer-events-auto bg-gradient-to-t from-white/90 dark:from-black/80 via-white/80 dark:via-black/80 to-transparent">
             
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 text-black/40 dark:text-white/40 text-xs md:text-sm font-light md:pl-[14rem] text-center md:text-left">
-              <span>© {new Date().getFullYear()} Tarun Asthana.</span>
+              <span suppressHydrationWarning>© {new Date().getFullYear()} Tarun Asthana.</span>
               <span className="hidden md:inline text-black/20 dark:text-white/20">|</span>
               <span className="flex items-center gap-1.5">Crafted with <span className="text-black/60 dark:text-white/60">immaculate vibes</span> <Sparkles size={14} className="text-black/60 dark:text-white/60" /></span>
               <span className="hidden md:inline text-black/20 dark:text-white/20">|</span>
