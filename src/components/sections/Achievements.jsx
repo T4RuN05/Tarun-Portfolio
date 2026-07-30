@@ -7,6 +7,14 @@ import { Trophy, Award, Calendar } from "lucide-react";
 
 const achievementsData = [
   {
+    id: 0,
+    title: "Best Club Website Award",
+    date: "July 2026",
+    category: "Rotaract District 3141",
+    description: "Recognized as the Best Club Website in Rotaract Mumbai for my work as UI/UX Designer & Web Developer for the Rotaract Club of TCET website. Designed intuitive user experiences and developed a responsive, modern interface.",
+    image: "/images/achievements/tcet_award.jpg"
+  },
+  {
     id: 1,
     title: "MoSPI Statathon Top 5 Finalist",
     date: "June 2026",
@@ -67,7 +75,7 @@ const AchievementItem = ({ item, index, activeIndex, setActiveIndex }) => {
             <img 
               src={item.image} 
               alt={item.title} 
-              className={`w-full h-full ${item.id === 3 ? "object-contain bg-white/5 p-4" : "object-cover"}`} 
+              className={`w-full h-full ${item.id === 3 ? "object-contain bg-white/5 p-4" : item.id === 0 ? "object-cover object-[center_40%]" : "object-cover"}`} 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           </div>
@@ -143,7 +151,7 @@ const TiltAchievementCard = ({ activeItem }) => {
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)", transition: { duration: 0.4 } }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className={`absolute inset-0 w-full h-full block ${activeItem.id === 3 ? "object-contain p-4 md:p-8" : "object-cover"}`}
+            className={`absolute inset-0 w-full h-full block ${activeItem.id === 3 ? "object-contain p-4 md:p-8" : activeItem.id === 0 ? "object-cover object-[center_40%]" : "object-cover"}`}
           />
         </AnimatePresence>
         
