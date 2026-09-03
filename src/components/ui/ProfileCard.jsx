@@ -337,50 +337,50 @@ const ProfileCardComponent = ({
                   t.style.display = 'none';
                 }}
               />
-              {showUserInfo && (
-                <div className="pc-user-info">
-                  <div className="pc-user-details">
-                    <div className="pc-mini-avatar">
-                      {/* react-doctor-disable-next-line */}
-                      <img
-                        src={miniAvatarUrl || avatarUrl}
-                        alt={`${name || 'User'} mini avatar`}
-                        loading="lazy"
-                        onError={e => {
-                          const t = e.target;
-                          t.style.opacity = '0.5';
-                          t.src = avatarUrl;
-                        }}
-                      />
-                    </div>
-                    <div className="pc-user-text">
-                      <div className="pc-handle">@{handle}</div>
-                      <div className="pc-status">{status}</div>
-                    </div>
+            </div>
+            {showUserInfo && (
+              <div className="pc-user-info">
+                <div className="pc-user-details">
+                  <div className="pc-mini-avatar">
+                    {/* react-doctor-disable-next-line */}
+                    <img
+                      src={miniAvatarUrl || avatarUrl}
+                      alt={`${name || 'User'} mini avatar`}
+                      loading="lazy"
+                      onError={e => {
+                        const t = e.target;
+                        t.style.opacity = '0.5';
+                        t.src = avatarUrl;
+                      }}
+                    />
                   </div>
-                  <div className="pc-actions">
-                    <a
-                      href={viewWorkHref}
-                      className="pc-contact-btn pc-secondary-btn"
-                      onClick={onViewWorkClick}
-                      style={{ pointerEvents: 'auto' }}
-                      aria-label={`View ${name}'s Work`}
-                    >
-                      {viewWorkText}
-                    </a>
-                    <a
-                      href={contactHref}
-                      className="pc-contact-btn"
-                      onClick={handleContactClick}
-                      style={{ pointerEvents: 'auto' }}
-                      aria-label={`Contact ${name}`}
-                    >
-                      {contactText}
-                    </a>
+                  <div className="pc-user-text">
+                    <div className="pc-handle">@{handle}</div>
+                    <div className="pc-status">{status}</div>
                   </div>
                 </div>
-              )}
-            </div>
+                <div className="pc-actions">
+                  <a
+                    href={viewWorkHref}
+                    className="pc-contact-btn pc-secondary-btn"
+                    onClick={onViewWorkClick}
+                    style={{ pointerEvents: 'auto' }}
+                    aria-label={`View ${name}'s Work`}
+                  >
+                    {viewWorkText}
+                  </a>
+                  <a
+                    href={contactHref}
+                    className="pc-contact-btn"
+                    onClick={handleContactClick}
+                    style={{ pointerEvents: 'auto' }}
+                    aria-label={`Contact ${name}`}
+                  >
+                    {contactText}
+                  </a>
+                </div>
+              </div>
+            )}
             <div className="pc-content">
               <div className="pc-details">
                 <h3>{name}</h3>

@@ -82,7 +82,7 @@ export function About() {
                 <span className="hidden md:inline">•</span>
                 <span>07/2023 - 05/2027</span>
               </div>
-              <p className="text-sm text-foreground/80 font-semibold">CGPA: 9.39</p>
+              <p className="text-sm text-foreground/80 font-semibold">CGPA: 9.41</p>
             </motion.div>
 
             <motion.div style={{ opacity: bottomContentOpacity }} className="relative pl-6 pb-2 transition-opacity duration-300">

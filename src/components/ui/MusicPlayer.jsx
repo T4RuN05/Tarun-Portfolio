@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Play, Pause, SkipForward, SkipBack, Music, X, Disc3 } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Music, Music2, Music3, Music4, X, Disc3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { sendGAEvent } from '@next/third-parties/google';
 
@@ -27,6 +27,13 @@ const playlist = [
     artist: "keinemusik",
     src: "/audio/track3.mp3",
     cover: "/audio-cover/track3.jpg"
+  },
+  {
+    id: 4,
+    title: "U Weren’t Here I Really Miss You",
+    artist: "CULT MEMBER",
+    src: "/audio/track4.mp3",
+    cover: "/audio-cover/track4.webp"
   }
 ];
 
@@ -37,6 +44,40 @@ const TOOLTIP_PHRASES = [
   "compiled with beats",
   "npm install good-vibes"
 ];
+
+const NOTE_ICONS = [Music, Music2, Music3, Music4];
+
+const FloatingNotes = ({ isPlaying }) => {
+  if (!isPlaying) return null;
+  return (
+    <div className="absolute top-1/2 left-[28px] -translate-x-1/2 -translate-y-1/2 w-10 h-10 pointer-events-none" style={{ zIndex: 10 }}>
+      {[...Array(4)].map((_, i) => {
+        const NoteIcon = NOTE_ICONS[i % NOTE_ICONS.length];
+        return (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 0, x: 0, scale: 0.3 }}
+            animate={{
+              opacity: [0, 0.7, 0],
+              y: [-10, -80],
+              x: [0, i % 2 === 0 ? 25 : -25],
+              scale: [0.3, 1, 0.6]
+            }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              delay: i * 0.6, // Stagger slightly faster for 4 notes
+              ease: "easeOut"
+            }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-foreground dark:text-white"
+          >
+            <NoteIcon size={i % 2 === 0 ? 12 : 14} />
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
 
 export function MusicPlayer() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -627,6 +668,8 @@ export function MusicPlayer() {
               style={{ scale: springPulse, transformOrigin: "left center" }}
               className="pointer-events-auto relative"
             >
+              <FloatingNotes isPlaying={isPlaying} />
+              
               {/* Outer expanding pulse ring on mobile when playing */}
               {isPlaying && !isDesktop && (
                  <div className="absolute top-1/2 left-[28px] -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-primary/40 rounded-full blur-md animate-ping pointer-events-none" style={{ zIndex: -1, animationDuration: '2s' }} />
