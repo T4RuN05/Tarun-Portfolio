@@ -23,7 +23,7 @@ const dmSerifDisplay = DM_Serif_Display({
 });
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://tarunbuilds.vercel.app"),
   title: "Tarun Asthana | Full Stack Web Developer",
   description: "Portfolio of Tarun Asthana, Full Stack Web Developer based in Mumbai, Maharashtra.",
 };
