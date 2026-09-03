@@ -26,6 +26,13 @@ export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://tarunbuilds.vercel.app"),
   title: "Tarun Asthana | Full Stack Web Developer",
   description: "Portfolio of Tarun Asthana, Full Stack Web Developer based in Mumbai, Maharashtra.",
+  openGraph: {
+    title: "Tarun Asthana | Full Stack Web Developer",
+    description: "Portfolio of Tarun Asthana, Full Stack Web Developer based in Mumbai, Maharashtra.",
+    url: "https://tarunbuilds.vercel.app",
+    siteName: "Tarun Asthana Portfolio",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }) {
